@@ -15,6 +15,6 @@ public class SpawnControl : MonoBehaviour {
 
 	public void SpawnPlayer()
 	{
-		Network.Instantiate(playerPrefab, new Vector3(0f, 0.5f, 0f), Quaternion.identity, 0);
+		Network.Instantiate(playerPrefab, new Vector3(0f, 0.5f, 10f), Quaternion.identity, 0);
 	}
 }

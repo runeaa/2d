@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour {
 	private Vector3 syncStartPosition = Vector3.zero;
 	private Vector3 syncEndPosition = Vector3.zero;
 
+	bool facingRight = true;
+
 	/*
 	private float syncDelay = 0f;
 	private float lastSynchronizationTime = 0f;
@@ -37,9 +39,17 @@ public class PlayerController : MonoBehaviour {
 			if (Input.GetButtonDown ("Jump")) {
 				rigidbody2D.velocity = new Vector2 (rigidbody2D.velocity.x, jumpSpeed);
 			}
+
+			// endrer spillerverden
+			if(direction > 0 && !facingRight ){
+				flip ();
+			}else if(direction < 0 && facingRight){
+				flip ();
+			}
+
 		}else {
 
-			rigidbody2D.isKinematic = true;
+			//rigidbody2D.isKinematic = true;
 			rigidbody2D.velocity = Vector3.zero;
 
 			SyncedMovement();
@@ -83,5 +93,13 @@ public class PlayerController : MonoBehaviour {
 
 	private bool isPlayer() {
 		return networkView.isMine;
+	}
+
+	//Skifter animasjonsretning når man endrer retning.
+	void flip(){
+		facingRight = !facingRight;
+		Vector3 theScale = transform.localScale;
+		theScale.x *= -1;
+		transform.localScale = theScale;
 	}
 }
