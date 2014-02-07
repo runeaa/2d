@@ -6,14 +6,12 @@ public class NetworkManager : MonoBehaviour {
 	private const string typeName = "Mohff tutorial game";
 	private const string gameName = "Bathrom";
 	private HostData[] hostList;
-	public GameObject playerPrefab;
+	private SpawnControl spawnControl;
 
-	// Use this for initialization
 	void Start () {
-	
+		spawnControl = GetComponent<SpawnControl> ();
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}
@@ -23,7 +21,7 @@ public class NetworkManager : MonoBehaviour {
 		if (!Network.isClient && !Network.isServer)
 		{
 			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
-				StartServer();
+				startServer();
 			
 			if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
 				RefreshHostList();
@@ -33,13 +31,13 @@ public class NetworkManager : MonoBehaviour {
 				for (int i = 0; i < hostList.Length; i++)
 				{
 					if (GUI.Button(new Rect(400, 100 + (110 * i), 300, 100), hostList[i].gameName))
-						JoinServer(hostList[i]);
+						joinServer(hostList[i]);
 				}
 			}
 		}
 	}
 
-	private void StartServer()
+	private void startServer()
 	{
 		Network.InitializeServer(4, 25001, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);
@@ -48,7 +46,7 @@ public class NetworkManager : MonoBehaviour {
 	void OnServerInitialized()
 	{
 		Debug.Log("Server Initializied");
-		SpawnPlayer();
+		spawnControl.SpawnPlayer();
 	}
 
 	private void RefreshHostList()
@@ -62,22 +60,16 @@ public class NetworkManager : MonoBehaviour {
 			hostList = MasterServer.PollHostList();
 	}
 
-	private void JoinServer(HostData hostData)
+	private void joinServer(HostData hostData)
 	{
 		Network.Connect(hostData);
 	}
 	
 	void OnConnectedToServer()
 	{
-		Debug.Log("Client Joined");
-		SpawnPlayer();
+		spawnControl.SpawnPlayer();
 	}
 
-	private void SpawnPlayer()
-	{
-		Network.Instantiate(playerPrefab, new Vector3(0f, 0.5f, 0f), Quaternion.identity, 0);
-	}
-	
 
 	void OnDisconnectedFromServer(NetworkDisconnection info) {
 		Debug.Log("This SERVER OR CLIENT has disconnected from a server");
@@ -86,9 +78,7 @@ public class NetworkManager : MonoBehaviour {
 	void OnFailedToConnect(NetworkConnectionError error){
 		Debug.Log("Could not connect to server: "+ error);
 	}
-	
-	
-	//Server functions called by Unity
+
 	void OnPlayerConnected(NetworkPlayer player) {
 		Debug.Log("Player connected from: " + player.ipAddress +":" + player.port);
 	}
