@@ -6,24 +6,24 @@ public class NetworkManager : MonoBehaviour {
 	private const string typeName = "Mohff tutorial game";
 	private const string gameName = "Bathrom";
 	private HostData[] hostList;
+	private Lobby lobby;
+	private Rom rom;
 	private SpawnControl spawnControl;
 
 	void Start () {
+		lobby = GetComponent<Lobby> ();
+		rom = GetComponent<Rom> ();
 		spawnControl = GetComponent<SpawnControl> ();
-	}
-
-	void Update () {
-	
 	}
 
 	void OnGUI()
 	{
 		if (!Network.isClient && !Network.isServer)
 		{
-			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
+			if (GUI.Button(new Rect(20, 20, 180, 50), "Create Game"))
 				startServer();
 			
-			if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
+			if (GUI.Button(new Rect(220, 20, 180, 50), "Refresh Hosts"))
 				RefreshHostList();
 			
 			if (hostList != null)
@@ -40,12 +40,15 @@ public class NetworkManager : MonoBehaviour {
 	private void startServer()
 	{
 		Network.InitializeServer(4, 25001, !Network.HavePublicAddress());
+
+	}
+
+	private void startGame() {
 		MasterServer.RegisterHost(typeName, gameName);
 	}
 
 	void OnServerInitialized()
 	{
-		Debug.Log("Server Initializied");
 		spawnControl.SpawnPlayer();
 	}
 
