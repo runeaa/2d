@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	private float syncTime = 0f;
 	private Vector3 syncStartPosition = Vector3.zero;
 	private Vector3 syncEndPosition = Vector3.zero;
+	private SpawnControl SpawnControl;
 
 	bool facingRight = true;
 
@@ -27,10 +28,12 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 
 		if (isPlayer ()) {
+			SpawnControl.SpawnPlayer ();
 		}
 	}
 
 	void Update(){
+		Debug.Log ("Kjlere soull");
 		if (isPlayer()) {
 
 			float direction = Input.GetAxis("Horizontal");
